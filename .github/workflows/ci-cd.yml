@@ -1,0 +1,50 @@
+name: CI/CD for To-Do List
+
+# Trigger the workflow on push or pull request events
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Checkout the repository's code
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    # Set up Node.js for building and testing (optional for simple static apps)
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    # Install dependencies (optional)
+    - name: Install dependencies
+      run: |
+        npm install
+
+    # Run tests (if you have any)
+    - name: Run tests
+      run: |
+        npm test
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Set up GitHub Pages for deployment
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: gh-pages # Branch to deploy to
+        folder: . # Folder containing the build files (adjust if you have a build step)
+
